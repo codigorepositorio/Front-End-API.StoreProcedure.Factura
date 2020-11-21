@@ -1,0 +1,172 @@
+<div class="mat-elevation-z8 basic-container">
+    <mat-toolbar>
+        <span>Ediciòn de Ventas</span>
+        <span class="fill-remaining-space"></span>
+        <button class="btn-dialog-close" mat-stroked-button tabIndex="-1">
+            <mat-icon>clear</mat-icon>
+        </button>
+    </mat-toolbar>
+
+    <div fxLayout="row" fxLayoutAlign="center center" *ngIf="cargando">
+        <mat-progress-spinner class="example-margin" color="primary" mode="indeterminate">
+        </mat-progress-spinner>
+    </div>
+
+    <form [formGroup]="formEditarVenta" class="normal-form" autocomplete="off">
+        <mat-grid-list cols="2" rowHeight="300px">
+            <mat-grid-tile>
+                <div class="controles-container">
+                    <mat-form-field>
+                        <mat-select [formControlName]="'estado'" placeholder="Estado">
+                            <mat-option>None</mat-option>
+                            <ng-container>
+                                <mat-option *ngFor="let est of estados" [value]="est.estado">
+                                    {{est.estado}}</mat-option>
+                            </ng-container>
+                        </mat-select>
+                        <mat-error *ngIf="hasError('estado', 'required')">* Seleccione estado. </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-select [formControlName]="'tipoComprobante'" placeholder="Documento">
+                            <mat-option>None</mat-option>
+                            <ng-container>
+                                <mat-option *ngFor="let tipoComprobante of tipoComprobantes" [value]="tipoComprobante">
+                                    {{tipoComprobante}}</mat-option>
+                            </ng-container>
+                        </mat-select>
+                        <mat-error *ngIf="hasError('estado', 'required')">* Seleccione estado. </mat-error>
+                    </mat-form-field>
+
+
+                    <mat-form-field>
+                        <mat-select [formControlName]="'codigoCliente'" placeholder="Cliente">
+                            <mat-option>None</mat-option>
+                            <ng-container>
+                                <mat-option *ngFor="let clientes of ListadoCliente" [value]="clientes.codigoCliente">
+                                    {{clientes.nombres}}</mat-option>
+                            </ng-container>
+                        </mat-select>
+                        <mat-error *ngIf="hasError('codigoCliente', 'required')">* Seleccione Cliente. </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-select [formControlName]="'serieComprobante'" placeholder="Mètodo Pago">
+                            <mat-option>None</mat-option>
+                            <ng-container>
+                                <mat-option *ngFor="let serieComprobante of serieComprobantes"
+                                    [value]="serieComprobante">
+                                    {{serieComprobante}}</mat-option>
+                            </ng-container>
+                        </mat-select>
+                        <mat-error *ngIf="hasError('serieComprobante', 'required')">* Seleccione Tipo de Pago.
+                        </mat-error>
+                    </mat-form-field>
+
+                </div>
+            </mat-grid-tile>
+
+            <mat-grid-tile>
+                <div class="controles-container">
+                    <mat-form-field>
+                        <input matInput type="text" placeholder="Orden(#)" formControlName="numeroFactura"
+                            readonly="true">
+                        <mat-error *ngIf="hasError('numeroFactura', 'required')">Ingrese Orden(#)</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <input matInput [matDatepicker]="picker" placeholder="Fecha (*)" formControlName="fecha"
+                            id="fecha" readonly (click)="picker.open()">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <input matInput type="text" placeholder="Importe Total (#)" formControlName="importeTotal"
+                            readonly="true" value="{{totalGeneral}}" [style.fontSize.px]="14">
+                    </mat-form-field>
+
+
+                    <div class="button-row">
+                        <button mat-raised-button color="primary" type="submit" [disabled]="!formEditarVenta.valid"
+                            (click)="EditarVenta()">Actualizar</button>
+                        <button mat-raised-button color="warn" (click)="ventas()">Ir a ventas</button>
+                    </div>
+                </div>
+            </mat-grid-tile>
+        </mat-grid-list>
+    </form>
+    <div>
+        <div class="search-div">
+            <button mat-raised-button (click)="agregar()">
+                <mat-icon>add</mat-icon>Add
+            </button>
+            <mat-form-field class="search-form-field" floatLabel="never">
+                <input matInput [(ngModel)]="searchKey" placeholder="Search" autocomplete="off" (keyup)="applyFilter()">
+                <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey"
+                    (click)="onSearchClear()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
+        </div>
+
+        <mat-table [dataSource]="detalleVentas" matSort style="height: 300px;overflow: auto;">
+
+            <ng-container matColumnDef="codigoItem">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Codigo (*)</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.codigoItem}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="descripcion">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Articulo(*)</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.descripcion}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="precio">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Precio</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.precio}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="cantidad">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>cantidad(Q)</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.cantidad}}</mat-cell>
+            </ng-container>
+
+
+            <ng-container matColumnDef="subTotal">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Sub Total (S/)</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.subTotal}}</mat-cell>
+            </ng-container>
+
+
+            <ng-container matColumnDef="actions">
+                <mat-header-cell *matHeaderCellDef>Editar | Eliminar</mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <button mat-icon-button color="accent" (click)="editar(element)">
+                        <mat-icon class="mat-18">system_update</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="Borrar(element)">
+                        <mat-icon>delete_outline</mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="loading">
+                <mat-footer-cell *matFooterCellDef colspan="6">
+                    Loading data...
+                </mat-footer-cell>
+            </ng-container>
+            <ng-container matColumnDef="noData">
+                <mat-footer-cell *matFooterCellDef colspan="6">
+                    No data.
+                </mat-footer-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            <mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide':detalleVentas!=null}"></mat-footer-row>
+            <mat-footer-row *matFooterRowDef="['noData']"
+                [ngClass]="{'hide':!(detalleVentas!=null && detalleVentas.data.length==0)}">
+            </mat-footer-row>
+        </mat-table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="5" showFirstLastButtons></mat-paginator>
+    </div>

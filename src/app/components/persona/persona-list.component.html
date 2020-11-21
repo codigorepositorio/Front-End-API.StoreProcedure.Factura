@@ -1,0 +1,87 @@
+<div class="container">
+    <mat-toolbar>
+        <span class="fill-remaining-space"></span>
+        Listado de Clientes
+        <span class="fill-remaining-space"></span>
+    </mat-toolbar>
+</div>
+<div fxLayout="row" fxLayoutAlign="center center" *ngIf="cargando">
+    <mat-progress-spinner class="example-margin" color="primary" mode="indeterminate"></mat-progress-spinner>    
+</div>
+<div class="search-div">
+    <button mat-raised-button (click)="agregar()"> <mat-icon>add</mat-icon>Create</button>
+    <mat-form-field class="search-form-field" floatLabel="never">
+        <input matInput [(ngModel)]="searchKey" placeholder="Search" autocomplete="off" (keyup)="applyFilter()">
+        <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey" (click)="onSearchClear()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </mat-form-field>
+</div>
+
+<div class="mat-elevation-z8" style="height: 400px;overflow: auto;">
+    <mat-table [dataSource]="personas" matSort>
+
+        <ng-container matColumnDef="codigoCliente">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Codigo</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.codigoCliente}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="tipo">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Tipo</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.tipo}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="nombres">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.nombres}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="documento">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Documento</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.documento}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="numero">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Numero</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.numero}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="direccion">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Direccion</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.direccion}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="telefono">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Telefono</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.telefono}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.email}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef>Editar | Eliminar</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <button mat-icon-button color="accent" (click)="editar(element)">
+                    <mat-icon class="mat-18">system_update</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="borrar(element)">
+                    <mat-icon>delete_outline</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="loading">
+            <mat-footer-cell *matFooterCellDef colspan="6">
+                Loading data...
+            </mat-footer-cell>
+        </ng-container>
+        <ng-container matColumnDef="noData">
+            <mat-footer-cell *matFooterCellDef colspan="6">
+                No data.
+            </mat-footer-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        <mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide':personas!=null}"></mat-footer-row>
+        <mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide':!(personas!=null && personas.data.length==0)}">
+        </mat-footer-row>
+    </mat-table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="5" showFirstLastButtons></mat-paginator>
+</div>

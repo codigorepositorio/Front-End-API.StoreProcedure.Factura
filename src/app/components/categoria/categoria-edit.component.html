@@ -1,0 +1,50 @@
+<mat-toolbar>
+    <span>Ediciòn de Categorias</span>
+    <span class="fill-remaining-space"></span>
+    <button class="btn-dialog-close" mat-stroked-button tabIndex="-1" (click)="cancelar()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</mat-toolbar>
+
+<div fxLayout="row" fxLayoutAlign="center center" *ngIf="cargando">
+    <mat-progress-spinner class="example-margin" color="primary" mode="indeterminate">
+    </mat-progress-spinner>
+</div>
+
+<form [formGroup]="formEditarCategoria" class="normal-form" autocomplete="off">
+    <mat-grid-list cols="1" rowHeight="200px">
+        <mat-grid-tile>
+            <div class="controles-container">
+
+                <mat-form-field>
+                    <input matInput placeholder="Nombre" formControlName="nombre">
+                    <mat-hint align="end">No más de 60 caracteres.</mat-hint>
+                    <mat-error *ngIf="hasError('nombre', 'required')">Ingrese el Nombre</mat-error>
+                    <mat-error *ngIf="hasError('nombre', 'minlength')">Minimo 5 caracteres</mat-error>
+                    <mat-error *ngIf="hasError('nombre', 'maxLength')">maxLength 60 caracteres</mat-error>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <input matInput placeholder="Descripcion" formControlName="descripcion">
+                    <mat-hint align="end">No más de 60 caracteres.</mat-hint>
+                    <mat-error *ngIf="hasError('descripcion', 'required')">Ingrese el Numero</mat-error>
+                    <mat-error *ngIf="hasError('descripcion', 'minlength')">Minimo 5 caracteres</mat-error>
+                    <mat-error *ngIf="hasError('descripcion', 'maxLength')">maxLength 60 caracteres</mat-error>
+                </mat-form-field>
+
+                <mat-checkbox formControlName="condicion" (change)="checkChanged($event)">Activo
+                </mat-checkbox>
+                <br>
+                <div class="button-row">
+
+                    <button mat-raised-button color="primary" type="button" (click)="Editar()"
+                        [disabled]="!formEditarCategoria.valid">Submit</button>
+
+                    <button mat-raised-button color="warn" (click)="cancelar()">Cancelar</button>
+                </div>
+            </div>
+        </mat-grid-tile>
+        <br>
+
+    </mat-grid-list>
+</form>

@@ -1,0 +1,74 @@
+<div fxLayout="row" fxLayoutAlign="center center">
+    <!-- <mat-progress-spinner class="example-margin" color="primary" mode="indeterminate">
+    </mat-progress-spinner> -->
+</div>
+
+<input [value]="this.data.detalleVentaId" type="hidden">
+<input [value]="this.data.ventaId" type="hidden">
+
+<form [formGroup]="articuloform" class="normal-form" autocomplete="off">
+
+    <mat-grid-list cols="1" rowHeight="80px">
+        <mat-grid-tile>
+            <div class="controles-container">
+                <mat-form-field appearance="fill">
+                    <mat-label>Articulo</mat-label>
+                    <mat-select (selectionChange)="updatePrice($event.value)" [formControlName]="'codigoItem'"
+                    placeholder="Articulo">
+                    <mat-option>None</mat-option>
+                    <ng-container>
+                        <mat-option *ngFor="let articulo of ListaArticulos" [value]="articulo.codigoItem">
+                            {{articulo.descripcion}}
+                        </mat-option>
+                    </ng-container>
+                </mat-select>
+                </mat-form-field>
+            </div>
+        </mat-grid-tile>
+
+    </mat-grid-list>
+
+
+    <mat-grid-list cols="1" rowHeight="80px">
+        <mat-grid-tile>
+            <div class="controles-container">
+                <mat-form-field appearance="fill">
+                    <mat-label>Precio </mat-label>
+                    <input placeholder="precio Venta" matInput type="number" formControlName="precio" readonly="true">
+                    <!-- <span matPrefix>S/&nbsp;</span>                     -->
+                </mat-form-field>
+
+
+            </div>
+        </mat-grid-tile>
+    </mat-grid-list>
+</form>
+
+
+<div>
+    <mat-grid-list cols="1" rowHeight="200px" style="margin-left: 10px;">
+        <mat-grid-tile>
+            <div class="controles-container">
+
+                <mat-form-field appearance="fill">
+                    <mat-label>Cantidad</mat-label>
+                    <input (keyup)="updateTotal()" matInput placeholder="Cantidad" type="number" [(ngModel)]="gcantidad"
+                        (click)="updateTotal()" [style.fontSize.px]="14">
+                </mat-form-field>
+
+                <mat-form-field>
+
+                    <i class="fas fa-cash-register"></i><input matInput placeholder="descripcion" type="number"
+                        [(ngModel)]="gtotal" readonly="true" [style.fontSize.px]="14">
+
+                </mat-form-field>
+            </div>
+
+            <div class="button-row">
+                <button mat-raised-button color="primary" type="button" [disabled]="!articuloform.valid"
+                    (click)="EditarDetalleVenta()">Enviar</button>
+                <button mat-raised-button color="warn" (click)="cancelar()">Salir</button>
+            </div>
+        </mat-grid-tile>
+    </mat-grid-list>
+</div>

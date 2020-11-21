@@ -1,0 +1,94 @@
+
+<div class="container">
+    <mat-toolbar>
+        <span class="fill-remaining-space"></span>
+        Listado de Facturas
+        <span class="fill-remaining-space"></span>
+    </mat-toolbar>
+</div>
+<div fxLayout="row" fxLayoutAlign="center center" *ngIf="cargando">
+    <mat-progress-spinner class="example-margin" color="primary" mode="indeterminate"></mat-progress-spinner>
+</div>
+<div class="search-div">
+    <button mat-raised-button (click)="agregar()">
+        <mat-icon>add</mat-icon>Nueva Venta
+    </button>
+    <mat-form-field class="search-form-field" floatLabel="never">
+        <input matInput [(ngModel)]="searchKey" placeholder="Search" autocomplete="off" (keyup)="applyFilter()">
+        <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey" (click)="onSearchClear()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </mat-form-field>
+</div>
+
+<div class="mat-elevation-z8" style="height: 400px;overflow: auto;">
+    <mat-table [dataSource]="ventas" matSort>
+
+        <ng-container matColumnDef="codigoFactura">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Factura (*)</mat-header-cell>
+            <mat-cell *matCellDef="let element" >{{element.codigoFactura}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="tipo">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Cliente (*)</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.tipo}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="numeroFactura">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Numero(#)</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.numeroFactura}}</mat-cell>
+        </ng-container>
+
+            
+        <ng-container matColumnDef="numComprobante">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Numero(#)</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.numComprobante}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="fecha">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Fecha (*)</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.fecha| date:'dd/MM/yyyy'}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="importeTotal">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Total (S/)</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.importeTotal}}</mat-cell>
+        </ng-container>
+<!-- 
+        <ng-container matColumnDef="estado">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Estado(*)</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.estado}}</mat-cell>
+        </ng-container> -->
+
+   
+
+        <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef>Editar | Eliminar</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <button mat-icon-button color="accent" (click)="editar(element)">
+                    <mat-icon class="mat-18">system_update</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="borrar(element)">
+                    <mat-icon>delete_outline</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="loading">
+            <mat-footer-cell *matFooterCellDef colspan="6">
+                Loading data...
+            </mat-footer-cell>
+        </ng-container>
+        <ng-container matColumnDef="noData">
+            <mat-footer-cell *matFooterCellDef colspan="6">
+                No data.
+            </mat-footer-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        <mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide':ventas!=null}"></mat-footer-row>
+        <mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide':!(ventas!=null && ventas.data.length==0)}">
+        </mat-footer-row>
+    </mat-table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="5" showFirstLastButtons></mat-paginator>
+</div>
